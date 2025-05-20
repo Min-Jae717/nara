@@ -10,6 +10,9 @@ import os
 load_dotenv()
 API_KEY = os.getenv("G2B_API_KEY")
 
+if not API_KEY:
+    raise ValueError("API 키가 제공되지 않았습니다. .env 또는 GitHub Secrets 확인 필요.")
+
 # 🔄 마지막 수집 시점 불러오기 함수
 def load_last_collected_time(file_name, default_value):
     try:
