@@ -1,0 +1,29 @@
+name: G2B API Collector
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # ✅ 5분마다 실행 (UTC 기준)
+  workflow_dispatch:       # ✅ 수동 실행도 가능
+
+jobs:
+  run-collector:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install requests python-dotenv
+
+    - name: Run collector script
+      env:
+        G2B_API_KEY: ${{ secrets.G2B_API_KEY }}  # ✅ GitHub Secret에서 주입
+      run: |
+        python collector.py
