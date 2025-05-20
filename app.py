@@ -1,43 +1,57 @@
-# app.py
 import streamlit as st
 import pandas as pd
-import sqlite3
+import psycopg2
 import json
+import os
+from dotenv import load_dotenv
 
-st.set_page_config(page_title="실시간 입찰공고 대시보드", layout="wide")
-st.title("📢 나라장터 실시간 입찰공고")
+# 환경변수 불러오기
+load_dotenv()
+SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
 
-# SQLite 연결 및 데이터 로딩
+# DB 연결 및 데이터 로딩
 def load_data():
-    conn = sqlite3.connect("bids_raw.db")
-    df = pd.read_sql_query("SELECT * FROM bids", conn)
+    conn = psycopg2.connect(SUPABASE_DB_URL)
+    cur = conn.cursor()
+    cur.execute("SELECT raw FROM bids_live ORDER BY raw->>'bidNtceBgnDt' DESC LIMIT 100")
+    rows = cur.fetchall()
     conn.close()
-    
-    # JSON 컬럼을 펼치기
-    expanded = pd.json_normalize([json.loads(row) for row in df["raw_json"]])
-    return expanded
 
-# 데이터 불러오기
+    # raw JSONB → pandas DataFrame 변환
+    raw_data = [json.loads(row[0]) for row in rows]
+    df = pd.json_normalize(raw_data)
+    return df
+
+# Streamlit UI
+st.set_page_config(page_title="입찰 공고 실시간 조회", layout="wide")
+st.title("\U0001F4E2 나라장터 실시간 입찰 공고")
+
 try:
-    df_bids = load_data()
-    st.success(f"총 {len(df_bids)}건의 공고를 불러왔습니다.")
+    df = load_data()
+    st.success(f"총 {len(df)}건의 공고 불러옴")
 
-    # 주요 컬럼 표시 (필요에 따라 조정)
-    display_cols = [
-        "bidNtceNo", "bidNtceNm", "dminsttNm", "bidNtceDt", "bidNtceBgnDt", "bidNtceEndDt"
-    ]
-    df_display = df_bids[display_cols].copy()
-    df_display.columns = ["공고번호", "공고명", "발주기관", "공고일자", "게시일시", "마감일시"]
+    # 주요 컬럼만 표시
+    df_display = df[[
+        "bidNtceNo", "bidNtceNm", "ntceInsttNm", "bsnsDivNm",
+        "bidNtceDate", "bidClseDate", "bidNtceUrl"
+    ]].rename(columns={
+        "bidNtceNo": "공고번호",
+        "bidNtceNm": "공고명",
+        "ntceInsttNm": "기관명",
+        "bsnsDivNm": "구분",
+        "bidNtceDate": "게시일",
+        "bidClseDate": "마감일",
+        "bidNtceUrl": "공고링크"
+    })
 
-    # 필터 UI
-    keyword = st.text_input("🔍 공고명 또는 발주기관 검색")
+    keyword = st.text_input("\U0001F50D 공고명/기관 검색")
     if keyword:
         df_display = df_display[
             df_display["공고명"].str.contains(keyword, case=False, na=False) |
-            df_display["발주기관"].str.contains(keyword, case=False, na=False)
+            df_display["기관명"].str.contains(keyword, case=False, na=False)
         ]
 
     st.dataframe(df_display, use_container_width=True)
 
 except Exception as e:
-    st.error(f"데이터를 불러오는 중 오류 발생: {e}")
+    st.error(f"❌ 데이터 로딩 실패: {e}")
