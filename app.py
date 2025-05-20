@@ -12,7 +12,6 @@ PASSWORD = os.getenv("password")
 HOST = os.getenv("host")
 PORT = os.getenv("port")
 DBNAME = os.getenv("dbname")
-API_KEY = os.getenv("G2B_API_KEY")
 
 # DB 연결 및 데이터 로딩
 def load_data():
