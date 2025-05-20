@@ -2,4 +2,3 @@ requests
 python-dotenv
 streamlit
 pandas
-json
