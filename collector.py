@@ -7,21 +7,11 @@ from urllib.parse import urlencode, quote_plus
 from dotenv import load_dotenv
 
 # .env 로드
-USER = os.getenv("user")
-PASSWORD = os.getenv("password")
-HOST = os.getenv("host")
-PORT = os.getenv("port")
-DBNAME = os.getenv("dbname")
+SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
 API_KEY = os.getenv("G2B_API_KEY")
 
 # DB 연결
-conn = psycopg2.connect(
-        user=USER,
-        password=PASSWORD,
-        host=HOST,
-        port=PORT,
-        dbname=DBNAME
-    )
+conn = psycopg2.connect(SUPABASE_DB_URL)
 cur = conn.cursor()
 
 # 수집 시점 관리
