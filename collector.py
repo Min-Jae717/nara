@@ -2,9 +2,13 @@ import os
 import json
 import requests
 import psycopg2
-from datetime import datetime, timedelta
 from urllib.parse import urlencode, quote_plus
 from dotenv import load_dotenv
+from datetime import datetime, timedelta, timezone
+
+# 한국 시간대로 변경(한국 시간대(KST)는 UTC+9)
+kst = timezone(timedelta(hours=9))
+now_kst = datetime.now(kst)
 
 # .env 로드
 SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
@@ -23,8 +27,8 @@ def load_last_time(file, default):
         return default
 
 last_file = "last_time.json"
-start_time = load_last_time(last_file, (datetime.now() - timedelta(minutes=5)).strftime("%Y%m%d%H%M"))
-end_time = datetime.now().strftime("%Y%m%d%H%M")
+start_time = load_last_time(last_file, (now_kst - timedelta(minutes=5)).strftime("%Y%m%d%H%M"))
+end_time = (now_kst).strftime("%Y%m%d%H%M")
 
 # 나라장터 API 호출
 BASE_URL = "http://apis.data.go.kr/1230000/ao/PubDataOpnStdService/getDataSetOpnStdBidPblancInfo"
