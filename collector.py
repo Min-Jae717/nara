@@ -81,8 +81,8 @@ if info:
 
         # GitHub에 자동 커밋
         try:
-            os.system("git config --global user.email 'dbwoals137@gmail.com')
-            os.system("git config --global user.name 'Min-Jae717')
+            os.system("git config --global user.email 'dbwoals137@gmail.com'")
+            os.system("git config --global user.name 'Min-Jae717'")
             os.system("git pull")
             os.system("git add last_time.json")
             os.system("git commit -m 'update last_time.json [skip ci]' || echo 'nothing to commit'")
