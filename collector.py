@@ -26,7 +26,7 @@ def load_last_time(file, default):
         return default
 
 last_file = "last_time.json"
-start_time = load_last_time(last_file, (now_kst - timedelta(minutes=5)).strftime("%Y%m%d%H%M"))
+start_time = load_last_time(last_file, (now_kst - timedelta(minutes=10)).strftime("%Y%m%d%H%M"))
 end_time = (now_kst).strftime("%Y%m%d%H%M")
 
 # 나라장터 API 호출
