@@ -3,3 +3,4 @@ psycopg2-binary
 python-dotenv
 streamlit
 pandas
+streamlit_autorefresh
