@@ -24,11 +24,11 @@ jobs:
 
       - name: Run collector
         env:
-          USER : ${{ secrets.user }}
-          PASSWORD : ${{ secrets.password }}
-          HOST : ${{ secrets.host }}
-          PORT : ${{ secrets.port }}
-          DBNAME : ${{ secrets.dbname }}
+          USER : ${{ secrets.USER }}
+          PASSWORD : ${{ secrets.PASSWORD }}
+          HOST : ${{ secrets.HOST }}
+          PORT : ${{ secrets.PORT }}
+          DBNAME : ${{ secrets.DBNAME }}
           G2B_API_KEY: ${{ secrets.G2B_API_KEY }}
         run: |
           python collector.py
