@@ -4,11 +4,10 @@ import requests
 import psycopg2
 from urllib.parse import urlencode, quote_plus
 from dotenv import load_dotenv
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 # 한국 시간대로 변경(한국 시간대(KST)는 UTC+9)
-kst = timezone(timedelta(hours=9))
-now_kst = datetime.now(kst)
+now_kst = datetime.utcnow() + timedelta(hours=9)
 
 # .env 로드
 SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
@@ -79,5 +78,16 @@ if info:
     if last_time:
         with open(last_file, 'w') as f:
             json.dump({"last_collected_time": last_time}, f)
+
+        # GitHub에 자동 커밋
+        try:
+            os.system("git config --global user.email 'dbwoals137@gmail.com')
+            os.system("git config --global user.name 'Min-Jae717')
+            os.system("git pull")
+            os.system("git add last_time.json")
+            os.system("git commit -m 'update last_time.json [skip ci]' || echo 'nothing to commit'")
+            os.system("git push")
+        except Exception as e:
+            print("자동 커밋 오류:", e)
 
 print(f"{len(info)}건 저장 완료")
