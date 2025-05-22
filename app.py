@@ -50,13 +50,13 @@ try:
     # 주요 컬럼만 표시
     df_display = df[[
         "bidNtceNo", "bidNtceNm", "bsnsDivNm", "ntceInsttNm",
-        "bidNtceDate", "bidClseDate", "bidNtceUrl"
+        "bidNtceBgn", "bidClseDate", "bidNtceUrl"
     ]].rename(columns={
         "bidNtceNo": "입찰공고번호",
         "bidNtceNm": "입찰공고명",
         "bsnsDivNm": "업무구분명",
         "ntceInsttNm": "공고기관명",  # 여기에 콤마가 누락되었습니다
-        "bidNtceDate": "입찰공고일자",
+        "bidNtceBgn": "입찰공고일자",
         "bidClseDate": "입찰마감일자",
         "bidNtceUrl": "입찰공고URL"
     })
@@ -71,7 +71,7 @@ try:
 
         # 기본 데이터프레임 표시 대신 커스텀 테이블 형식으로 표시
         
-        # 페이지네이션 구현 (임시)
+    # 페이지네이션 구현 (임시)
     items_per_page = 10
     total_pages = len(df_display) // items_per_page + (1 if len(df_display) % items_per_page > 0 else 0)
         
