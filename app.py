@@ -24,7 +24,7 @@ def load_data():
         dbname=DBNAME
     )
     cur = conn.cursor()
-    cur.execute("SELECT raw FROM bids_live ORDER BY raw->> 'bidNtceDate' DESC, raw->> 'bidNtceBgn' DESC LIMIT 100")
+    cur.execute("SELECT raw FROM bids_live ORDER BY raw->> 'bidNtceDate' DESC, raw->> 'bidNtceBgn' DESC")
     rows = cur.fetchall()
     conn.close()
 
